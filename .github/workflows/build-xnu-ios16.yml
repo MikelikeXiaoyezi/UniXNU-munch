@@ -34,7 +34,7 @@ env:
 jobs:
   xnu:
     name: xnu-8796 (${{ inputs.kernel_config }})
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +69,10 @@ jobs:
           brew install jq gum bash cmake ninja
           printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/local/bin/xcodes >/dev/null
           sudo chmod +x /usr/local/bin/xcodes
-          XC=$(ls -d /Applications/Xcode_*.app | sort -V | head -1)
+          # xnu-8796's IORPC ABI needs Xcode 15's iig. macos-15 ships Xcode 15.4
+          # alongside 16.x; prefer 15.x when present, otherwise use the newest.
+          XC=$(ls -d /Applications/Xcode_15*.app 2>/dev/null | sort -V | head -1 || true)
+          if [ -z "$XC" ]; then XC=$(ls -d /Applications/Xcode_*.app | sort -V | head -1); fi
           echo "DEVELOPER_DIR=$XC/Contents/Developer" >> "$GITHUB_ENV"
           sudo xcode-select -s "$XC"
           xcodebuild -version
