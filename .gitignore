@@ -1,0 +1,10 @@
+# Build outputs and local inputs. Apple binaries (IPSW, dmg, trust caches,
+# d22ap.adt) never belong in this repository.
+/build/
+/out/
+*.img
+*.dmg
+*.ipsw
+*.ipsw.*
+local.toml
+unixnu.local.toml

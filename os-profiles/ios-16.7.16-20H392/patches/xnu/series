@@ -1,0 +1,7 @@
+# iOS 16 XNU patch series.
+#
+# The iOS 16 kernel for this port is built from xnu-8796.141.3 with the
+# ios-sweet patch set (see docs/PORTING-NOTES.md). UniXNU's XnuPrelink-based
+# payload path is not used for iOS 16, so this series is intentionally empty.
+# If the kernel build moves into UniXNU, list the device patches here in
+# application order.
