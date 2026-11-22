@@ -1,0 +1,19 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -220,6 +220,16 @@
+ 	.align	3
+ 	.globl EXT(_start)
+ LEXT(_start)
++	/* MUNCH entry marker: 1 MiB white at the top of the framebuffer. */
++	movz	x9, #0x9c00, lsl #16
++	mov	w10, #0xffff
++	movk	w10, #0xffff, lsl #16
++	mov	x11, #0
++999:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	999b
+ 	b	EXT(start_first_cpu)
+ 
+ 
