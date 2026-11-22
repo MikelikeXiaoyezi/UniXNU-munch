@@ -55,10 +55,14 @@ jobs:
 
       - name: Stage patches
         run: |
-          cp ios-sweet/xnu/patches/*.patch dxb/patches/
-          cp ios-sweet/xnu/patches/*.sh dxb/patches/ 2>/dev/null || true
-          if [ -d xnu/patches-munch ]; then
-            cp xnu/patches-munch/*.patch dxb/patches/ 2>/dev/null || true
+          # patches-munch is the SM8250 (kona) patch set derived from apollo. It
+          # replaces the sweet (SM7150) set instead of stacking on top of it.
+          if [ -d xnu/patches-munch ] && [ -n "$(ls -A xnu/patches-munch 2>/dev/null)" ]; then
+            cp xnu/patches-munch/*.patch dxb/patches/
+            cp xnu/patches-munch/*.sh dxb/patches/ 2>/dev/null || true
+          else
+            cp ios-sweet/xnu/patches/*.patch dxb/patches/
+            cp ios-sweet/xnu/patches/*.sh dxb/patches/ 2>/dev/null || true
           fi
           # libfirehose_kernel is built arm64e-only; this kernel is plain arm64.
           sed -i '' 's/ARCHS="x86_64 arm64e" VALID_ARCHS="x86_64 arm64e"/ARCHS="x86_64 arm64e arm64" VALID_ARCHS="x86_64 arm64e arm64"/' dxb/build.sh
