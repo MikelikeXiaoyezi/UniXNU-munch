@@ -5,7 +5,7 @@
  LEXT(start_first_cpu)
  
 +	/* MUNCH marker: blue 1 MiB at framebuffer + 2 MiB, before any MSR. */
-+	movz	x9, #0x9e00, lsl #16
++	movz	x9, #0x9c10, lsl #16
 +	mov	w10, #0xff
 +	movk	w10, #0xff00, lsl #16
 +	mov	x11, #0
