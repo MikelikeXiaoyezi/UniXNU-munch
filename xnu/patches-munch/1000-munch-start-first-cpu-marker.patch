@@ -1,10 +1,10 @@
 --- a/osfmk/arm64/start.s
 +++ b/osfmk/arm64/start.s
-@@ -456,6 +456,17 @@
+@@ -456,8 +456,19 @@
  	.globl EXT(start_first_cpu)
  LEXT(start_first_cpu)
  
-+	/* MUNCH marker: blue 1 MiB at framebuffer + 2 MiB, before any MSR. */
++	/* MUNCH marker: blue 1 MiB at framebuffer + 1 MiB, before any MSR. */
 +	movz	x9, #0x9c10, lsl #16
 +	mov	w10, #0xff
 +	movk	w10, #0xff00, lsl #16
@@ -16,5 +16,8 @@
 +	b.lo	1000b
 +
  	// Unlock the core for debugging
- 	msr		OSLAR_EL1, xzr
+-	msr		OSLAR_EL1, xzr
++	nop		// MUNCH: OSLAR_EL1 traps on this core
  	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
+ 
+ 	mov		x20, x0
