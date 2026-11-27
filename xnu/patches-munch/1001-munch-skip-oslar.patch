@@ -1,11 +1,11 @@
 --- a/osfmk/arm64/start.s
 +++ b/osfmk/arm64/start.s
-@@ -127,7 +127,7 @@
- LEXT(reset_vector)
- 	// Preserve x0 for start_first_cpu, if called
+@@ -457,7 +457,7 @@
+ LEXT(start_first_cpu)
+ 
  	// Unlock the core for debugging
 -	msr		OSLAR_EL1, xzr
 +	nop		// MUNCH: OSLAR_EL1 traps on this core
  	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
  
- #if !(defined(KERNEL_INTEGRITY_KTRR) || defined(KERNEL_INTEGRITY_CTRR))
+ 	mov		x20, x0
