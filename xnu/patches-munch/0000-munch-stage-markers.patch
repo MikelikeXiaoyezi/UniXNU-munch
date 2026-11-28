@@ -129,8 +129,8 @@
  
  	// Enable caches, MMU, ROP and JOP
 +
-+	/* MUNCH 1012: 1 MiB framebuffer + 0x9c80 */
-+	movz	x9, #0x9c80, lsl #16
++	/* MUNCH 1012: 1 MiB framebuffer + 0x9c08 */
++	movz	x9, #0x9c08, lsl #16
 +	mov	w10, #0x00ff
 +	movk	w10, #0xff00, lsl #16
 +	mov	x11, #0
