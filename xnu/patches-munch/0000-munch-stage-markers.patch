@@ -70,3 +70,75 @@
  #if HAS_NEX_PG
  	mov x19, lr
  	bl		EXT(set_nex_pg)
+@@ -645,6 +689,17 @@
+ 	ldr		x1, [x0, SR_RESTORE_TCR_EL1]
+ 	MSR_TCR_EL1_X1
+ 
++	/* MUNCH 1009: 1 MiB framebuffer + 0x9c50 */
++	movz	x9, #0x9c50, lsl #16
++	mov	w10, #0x00ff
++	movk	w10, #0xff00, lsl #16
++	mov	x11, #0
++1009:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	1009b
++
+ 	/* Set up translation table base registers.
+ 	 *	TTBR0 - V=P table @ top of kernel
+ 	 *	TTBR1 - KVA table @ top of kernel + 1 page
+@@ -662,6 +717,17 @@
+ 	and		x0, x0, #(TTBR_BADDR_MASK)
+ 	MSR_TTBR1_EL1_X0
+ 
++	/* MUNCH 1010: 1 MiB framebuffer + 0x9c60 */
++	movz	x9, #0x9c60, lsl #16
++	mov	w10, #0x00ff
++	movk	w10, #0xff00, lsl #16
++	mov	x11, #0
++1010:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	1010b
++
+ 	// Set up MAIR attr0 for normal memory, attr1 for device memory
+ 	mov		x0, xzr
+ 	mov		x1, #(MAIR_WRITEBACK << MAIR_ATTR_SHIFT(CACHE_ATTRINDX_WRITEBACK))
+@@ -685,6 +751,17 @@
+ 	tlbi	vmalle1
+ 	dsb		ish
+ 
++	/* MUNCH 1011: 1 MiB framebuffer + 0x9c70 */
++	movz	x9, #0x9c70, lsl #16
++	mov	w10, #0x00ff
++	movk	w10, #0xff00, lsl #16
++	mov	x11, #0
++1011:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	1011b
++
+ 
+ #if defined(BCM2837)
+ 	// Setup timer interrupt routing; must be done before MMU is enabled
+@@ -745,6 +822,17 @@
+ 	MSR_SCTLR_EL1_X0
+ 	isb		sy
+ 
++	/* MUNCH 1012: 1 MiB framebuffer + 0x9c80 */
++	movz	x9, #0x9c80, lsl #16
++	mov	w10, #0x00ff
++	movk	w10, #0xff00, lsl #16
++	mov	x11, #0
++1012:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	1012b
++
+ #if !VMAPPLE
+ 	MOV64   x1, SCTLR_EL1_DEFAULT
+ 	cmp		x0, x1
