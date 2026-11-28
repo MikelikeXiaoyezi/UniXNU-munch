@@ -1,28 +1,6 @@
 --- a/osfmk/arm64/start.s
 +++ b/osfmk/arm64/start.s
-@@ -127,9 +127,20 @@
- LEXT(reset_vector)
- 	// Preserve x0 for start_first_cpu, if called
- 	// Unlock the core for debugging
--	msr		OSLAR_EL1, xzr
-+	nop		// MUNCH: OSLAR_EL1 traps on this core
- 	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
- 
-+	/* MUNCH 1006: 1 MiB framebuffer + 0x9c20 */
-+	movz	x9, #0x9c20, lsl #16
-+	mov	w10, #0x00ff
-+	movk	w10, #0xff00, lsl #16
-+	mov	x11, #0
-+1006:
-+	str	w10, [x9, x11, lsl #2]
-+	add	x11, x11, #1
-+	cmp	x11, #0x40000
-+	b.lo	1006b
-+
- #if !(defined(KERNEL_INTEGRITY_KTRR) || defined(KERNEL_INTEGRITY_CTRR))
- 	// Set low reset vector before attempting any loads
- 	adrp    x0, EXT(LowExceptionVectorBase)@page
-@@ -313,6 +324,17 @@
+@@ -313,6 +313,17 @@
  	adrp	x25, EXT(bootstrap_pagetables)@page	// Get the start of the page tables
  	ldr		x26, [x20, BA_BOOT_FLAGS]			// Get the kernel boot flags
  
@@ -40,7 +18,7 @@
  
  	// Set TPIDR_EL0 with the CPU number
  	ldrsh	x0, [x21, CPU_NUMBER_GS]
-@@ -456,6 +478,17 @@
+@@ -456,10 +467,32 @@
  	.globl EXT(start_first_cpu)
  LEXT(start_first_cpu)
  
@@ -56,8 +34,24 @@
 +	b.lo	1005b
 +
  	// Unlock the core for debugging
- 	msr		OSLAR_EL1, xzr
+-	msr		OSLAR_EL1, xzr
++	nop		// MUNCH: OSLAR_EL1 traps on this core
  	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
+ 
++	/* MUNCH 1006: 1 MiB framebuffer + 0x9c20 */
++	movz	x9, #0x9c20, lsl #16
++	mov	w10, #0x00ff
++	movk	w10, #0xff00, lsl #16
++	mov	x11, #0
++1006:
++	str	w10, [x9, x11, lsl #2]
++	add	x11, x11, #1
++	cmp	x11, #0x40000
++	b.lo	1006b
++
+ 	mov		x20, x0
+ 	mov		x21, #0
+ 
 @@ -633,6 +666,17 @@
   */
  common_start:
