@@ -124,10 +124,11 @@
  
  #if defined(BCM2837)
  	// Setup timer interrupt routing; must be done before MMU is enabled
-@@ -745,6 +822,17 @@
- 	MSR_SCTLR_EL1_X0
- 	isb		sy
+@@ -741,6 +818,17 @@
+ #endif /* HAS_APPLE_PAC */
  
+ 	// Enable caches, MMU, ROP and JOP
++
 +	/* MUNCH 1012: 1 MiB framebuffer + 0x9c80 */
 +	movz	x9, #0x9c80, lsl #16
 +	mov	w10, #0x00ff
@@ -138,7 +139,6 @@
 +	add	x11, x11, #1
 +	cmp	x11, #0x40000
 +	b.lo	1012b
-+
- #if !VMAPPLE
- 	MOV64   x1, SCTLR_EL1_DEFAULT
- 	cmp		x0, x1
+ 	MOV64   x0, SCTLR_EL1_DEFAULT
+ 	MSR_SCTLR_EL1_X0
+ 	isb		sy
